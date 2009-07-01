@@ -1,0 +1,14 @@
+#!/bin/sh
+
+exe_dir=`dirname $0`
+exe_jar=$exe_dir/${artifactId}-${version}.jar
+
+if [ -z "$JAVA_HOME" ]; then
+  echo "WARNING: You don't have JAVA_HOME set."
+  JAVA_BIN=java
+else
+  JAVA_BIN="$JAVA_HOME/bin/java"
+fi
+
+CMD="$JAVA_BIN $JAVA_OPTS -cp $exe_dir -jar $exe_jar $@"
+eval $CMD

@@ -1,0 +1,23 @@
+<assembly>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<baseDirectory>${artifact.artifactId}</baseDirectory>
+	<files>
+		<file>
+			<source>target/${artifact.artifactId}-${artifact.version}.jar</source>
+		</file>
+		<file>
+			<source>target/classes/pomaid</source>
+			<destName>pomaid</destName>
+			<fileMode>0770</fileMode>
+		</file>
+	</files>
+	<dependencySets>
+		<dependencySet>
+			<outputFileNameMapping>
+				${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}
+			</outputFileNameMapping>
+		</dependencySet>
+	</dependencySets>
+</assembly>
