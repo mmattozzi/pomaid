@@ -1,0 +1,31 @@
+Currently in a rudimentary working state. 
+
+General idea is to run an interactive session in the working directory of your project that goes like this:
+
+$ pomaid
+Search: commons-lang
+Select matching dependency: 
+[1] commons-lang/commons-lang
+[x] Exit
+1
+Select available version: 
+[0] 1.0
+[1] 1.0-b1
+[2] 1.0-b1.1
+[3] 1.0.1
+[4] 2.0
+[5] 2.1
+[6] 2.2
+[7] 2.3
+[8] 2.4
+[9] 20030203.000129
+[x] Exit
+8
+Dependency: 
+<dependency>
+   <groupId>commons-lang</groupId>
+   <artifactId>commons-lang</artifactId>
+   <version>2.4</version>
+</dependency>
+Add to pom? [y/n]
+y
