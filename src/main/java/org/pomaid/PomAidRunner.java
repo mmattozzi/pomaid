@@ -87,7 +87,13 @@ public class PomAidRunner {
 			choiceStr = reader.readLine();
 			if (choiceStr.equals("y")) {
 				Pom pom = new Pom(new File(file));
-				pom.addDependency(deps.get(choice2-1));
+				try {
+					pom.addDependency(deps.get(choice2-1));
+				} catch (DependencyAlreadyExistsException e) {
+					e.printStackTrace();
+				} catch (DuplicateDependencyException e) {
+					e.printStackTrace();
+				}
 				pom.write();
 			}
 			
