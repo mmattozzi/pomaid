@@ -81,8 +81,10 @@ public class PomAidRunner {
 			
 			int choice2 = Integer.parseInt(choiceStr);
 			System.out.println("Dependency: ");
-			System.out.println(deps.get(choice2-1).toXml());
-			System.out.println("Add to pom? [y/n]");
+			PomDependency dependency = deps.get(choice2-1);
+			System.out.println(dependency.toXml());
+			System.out.print("Add to pom? [y/n] ");
+			System.out.flush();
 			
 			choiceStr = reader.readLine();
 			if (choiceStr.equals("y")) {
@@ -90,9 +92,17 @@ public class PomAidRunner {
 				try {
 					pom.addDependency(deps.get(choice2-1));
 				} catch (DependencyAlreadyExistsException e) {
-					e.printStackTrace();
+					System.out.print(String.format("Dependency already exists (version  %s), replace with version %s? [y/n] ", e.getDependency().version, dependency.version));
+					System.out.flush();
+					choiceStr = reader.readLine();
+					if (choiceStr.equals("y")) {
+						pom.addOrReplaceDependency(dependency);
+					} else {
+						System.exit(1);
+					}
 				} catch (DuplicateDependencyException e) {
-					e.printStackTrace();
+					System.out.println("Dependency already in pom.");
+					System.exit(1);
 				}
 				pom.write();
 			}

@@ -9,7 +9,7 @@ public class PomDependency implements Comparable<PomDependency> {
 	
 	protected String groupId;
 	protected String artifactId;
-	protected String version;
+	protected PomVersion version;
 	
 	public static PomDependency newInstance(String groupId, String artifactId, String version) {
 		String hashString = String.format("%s;%s;%s", groupId, artifactId, version);
@@ -19,7 +19,7 @@ public class PomDependency implements Comparable<PomDependency> {
 			PomDependency pomDependency = new PomDependency();
 			pomDependency.groupId = groupId;
 			pomDependency.artifactId = artifactId;
-			pomDependency.version = version;
+			pomDependency.version = new PomVersion(version);
 			pomDependencySingletons.put(hashString, pomDependency);
 			return pomDependency;
 		}
@@ -36,9 +36,15 @@ public class PomDependency implements Comparable<PomDependency> {
 		
 		String version = parts[parts.length - 2];
 		String artifactId = parts[parts.length - 3];
-		String groupId = parts[parts.length - 4];
+		StringBuffer groupId = new StringBuffer();
 		
-		return newInstance(groupId, artifactId, version);
+		for (int i = 0; i <= (parts.length - 4); i++ ) {
+			if (! parts[i].isEmpty()) {
+				groupId.append(parts[i] + ".");
+			}
+		}
+		
+		return newInstance(groupId.substring(0, groupId.length() - 1), artifactId, version);
 	}
 	
 	@Override
@@ -47,7 +53,7 @@ public class PomDependency implements Comparable<PomDependency> {
 	}
 
 	public int compareTo(PomDependency o) {
-		return this.version.compareToIgnoreCase(o.version);
+		return this.version.compareTo(o.version);
 	}
 	
 	public boolean equalsArtifact(PomDependency d) {

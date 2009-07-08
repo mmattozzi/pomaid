@@ -1,7 +1,6 @@
 package org.pomaid;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,18 +12,16 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
+import org.apache.xml.serialize.OutputFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import org.apache.xml.serialize.XMLSerializer;
 
 public class Pom {
 
@@ -85,7 +82,7 @@ public class Pom {
 		
 		for (PomDependency dep : existingDependencies) {
 			if (dep.equalsArtifact(pomDependency)) {
-				throw new DependencyAlreadyExistsException();
+				throw new DependencyAlreadyExistsException(dep);
 			}
 		}
 		
@@ -131,30 +128,29 @@ public class Pom {
 		Element artifactId = pomDoc.createElement("artifactId");
 		artifactId.setTextContent(pomDependency.artifactId);
 		Element version = pomDoc.createElement("version");
-		version.setTextContent(pomDependency.version);
+		version.setTextContent(pomDependency.version.toString());
 		newDependency.appendChild(groupId);
 		newDependency.appendChild(artifactId);
 		newDependency.appendChild(version);
 		dependencies.appendChild(newDependency);
 	}
 	
-	public void write() throws TransformerException, FileNotFoundException {
+	public void write() throws TransformerException, IOException {
 		write(new FileOutputStream(file));
 	}
 	
-	public void print() throws TransformerException {
+	public void print() throws TransformerException, IOException {
 		write(System.out);
 	}
 	
-	private void write(OutputStream out) throws TransformerException {
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-		tFactory.setAttribute("indent-number", 2);  
-		Transformer transformer = tFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		
-		DOMSource source = new DOMSource(pomDoc);
-		StreamResult result = new StreamResult(out);
-		transformer.transform(source, result); 
+	@SuppressWarnings("deprecation")
+	private void write(OutputStream out) throws TransformerException, IOException {
+		OutputFormat format = new OutputFormat(pomDoc);
+        format.setLineWidth(65);
+        format.setIndenting(true);
+        format.setIndent(2);
+        XMLSerializer serializer = new XMLSerializer(out, format);
+        serializer.serialize(pomDoc);
 	}
 	
 }

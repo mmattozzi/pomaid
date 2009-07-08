@@ -75,7 +75,9 @@ public class JarvanaPomSearcher implements PomSearcher {
 	protected void addPomToMap(Map<String, List<PomDependency>> pomsFound, PomDependency pom) {
 		String id = pom.groupId + "/" + pom.artifactId;
 		if (pomsFound.containsKey(id)) {
-			pomsFound.get(id).add(pom);
+			if (! pomsFound.get(id).contains(pom)) {
+				pomsFound.get(id).add(pom);
+			}
 		} else {
 			List<PomDependency> pomList = new ArrayList<PomDependency>();
 			pomList.add(pom);
